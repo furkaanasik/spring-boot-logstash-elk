@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="spring.application.name" value="elk" scope="context"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ELK" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:50000</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>
+                {
+                "application-name":"${spring.application.name}"
+                }
+            </customFields>
+
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider"/>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ELK"/>
+    </root>
+</configuration>
